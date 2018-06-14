@@ -2,9 +2,9 @@ import React , { Component } from 'react';
 class DropMenus extends Component {
 	dropMenu(label = '', id = '', onChangeHandler = '', children = [], sql_id = '', option_value = '')
     {
-        if ( arguments.length > 0 && children.length )
+        if ( arguments.length > 0 )
         {
-        	onChangeHandler = onChangeHandler ? onChangeHandler : _ => '';
+        	onChangeHandler = onChangeHandler ? onChangeHandler : _ => null;
             return (<select
             		name={id} id={id}
             		defaultValue={this.props[sql_id]}

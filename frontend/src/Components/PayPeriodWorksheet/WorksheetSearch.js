@@ -2,6 +2,11 @@ import React , { Component } from 'react';
 import DropMenus from "../Modules/DropMenus";
 import getIt from "../../Modules/getIt";
 class PayPeriodWorksheet extends Component {
+	render() {
+		return (<div className="PayPeriodWorksheet"></div>);
+	}
+}
+class PayPeriodWorksheetSearch extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -24,6 +29,7 @@ class PayPeriodWorksheet extends Component {
 			['http://127.0.0.1:5000/Api/Districts', 'Select Your District', 'district_id', () => '', 'district_id', 'district_name'],
 			['http://127.0.0.1:5000/Api/Salons', 'Select a Salon', 'store_id', this.showStylists(this.value, true), 'store_id', 'store_name'],
 			['http://127.0.0.1:5000/Api/Stylists', 'Select a Stylist', 'stylist_id', this.showPayPeriods(this.value, true), 'stylist_id', 'stylist_name'],
+			['http://127.0.0.1:5000/Api/PayPeriods', 'Select a Pay Period', 'pp_date', this.showPayPeriods(this.value, true), 'pp_date', 'pp_date'],
 		]
 		const dropMenusPromise = dropMenusData.map((row, i) => {
 			return getIt(row[0]);
@@ -37,7 +43,7 @@ class PayPeriodWorksheet extends Component {
 	render() {
 		const { isLoading, dropMenus } = this.state;
 		return (
-			<div className="PayPeriodWorksheet">
+			<div className="PayPeriodWorksheetSearch">
 				<h2>Pay Period Worksheet</h2>
 				<div id="search_criteria">
 					<form method="get" action="index.php">
@@ -45,30 +51,10 @@ class PayPeriodWorksheet extends Component {
 						<ul>
 							{isLoading ? 'Loading...' : undefined}
 							{dropMenus ? dropMenus : undefined}
-						{/*
-							<li><select name="pp_date" id="pp_date" onChange={this.setPayPeriod.bind(this)}>
-								<option value="0">Select a Pay Date</option>
-							if ( $result->num_rows > 0 )
-							{
-							while ( $row = $result->fetch_assoc() )
-							{
-							    <option value=".current($row).""";
-							    if ( current($row) == $myWorkSheet->pp_date )
-							    {
-							        echo " selected="selected"";
-							    }
-							    >".current($row)."</option>";
-							}
-							}
-							</select></li>
-
-							<li>{this.dropMenu('Send Image to Stylist')}</li> 
-						*/}
 						</ul>
 					</form>
 				</div>
-				<div id="ppw">
-				</div>
+				<PayPeriodWorksheet />
 			</div>
 		);
 	}
@@ -87,4 +73,4 @@ class PayPeriodWorksheet extends Component {
 
 	}
 }
-export default PayPeriodWorksheet;
+export default PayPeriodWorksheetSearch;

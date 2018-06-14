@@ -18,7 +18,7 @@ class Menu extends Component {
                 const nextChild = !component
                   ? (<label htmlFor={`link-${j}`}>{header}</label>)
                   : (<Link to={fullPath}>{header}</Link>);
-                return (hide !== true) ? (<li key={ `link-${j}` }><p>{nextChild}</p><p>{children}</p></li>) : null; }
+                return (hide !== true) ? (<li key={ `link-${j}` }><span>{nextChild}</span><br /><span>{children}</span></li>) : null; }
             )}
           </ul>
       );

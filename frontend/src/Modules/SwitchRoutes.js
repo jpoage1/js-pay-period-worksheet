@@ -2,25 +2,55 @@ import React, { Component } from 'react';
 import { Route, Switch,} from 'react-router-dom';
 
 class SwitchRoutes extends Component {
-  switchRoutes(routes, pathPrefix, k) {
+  routeSet (routeConfig) {
+    const { path, render, key, k, exact } = routeConfig;
+    return   (<Route
+      path={path}
+      render={render}
+      key={key}
+      k={k}
+      exact={exact}
+    />);
+  };
+  routeConfig(routes, pathPrefix, k) {
     return routes.map(({ path, component: C, exact, routes }, i) => {
         const fullPath = pathPrefix ? `${pathPrefix}/${path}` : `/${path}`;
-        const j = k ? k+i : i;
-        if ( !C && routes ) return this.switchRoutes(routes, fullPath, j);
-        const RoutesToMenu = fullPath === '/' ? this.props.routes : null;
-        return (<Route
-          path={fullPath}
-          render={(props) => (<C {...props} session={this.props.session} routes={RoutesToMenu} />)}
-          key={`route_${j}`}
-          k={j}
-          exact={exact === true ? true : false}
-        />)
-      })
+        // Route doesn't have a component attoached.
+       // if ( !C && routes ) // Then dig deeper for more routes
+         // return this.switchRoutes(routes, fullPath, j);
+        const switchRoutes = routes !== undefined && routes.length > 0? this.routeConfig(routes, fullPath, 0) : [];
+       // console.log(switchRoutes)
+        const RoutesToMenu = path === '' ? this.props.routes : undefined;
+        const routeConfig = {
+          path: fullPath,
+          render: (props) => (<C {...props} session={this.props.session} routes={RoutesToMenu} />),
+          key: `route_${path}_${i}`,
+          exact: exact === true ? true : false,
+        }
+        return switchRoutes.concat([routeConfig]);
+      });
+  }
+  foldRoutes(routes) {
+    if ( !Array.isArray(routes) )
+      return routes;
+    const reducer = (folded, moreRoutes) => 
+      folded.concat(
+        Array.isArray(moreRoutes)
+          ? moreRoutes.reduce(reducer, [])
+          : moreRoutes
+      );
+    const foldRoutes = routes.reduce(reducer, []);
+    return foldRoutes;
+  }
+  switchRoutes(routes) {
+    return this.foldRoutes(this.routeConfig(routes)).map(
+      (routeConfig) => this.routeSet(routeConfig));
   }
   render() {
+    const switchRoutes = this.switchRoutes(this.props.routes);
     return (
       <Switch>
-       {this.switchRoutes(this.props.routes)}
+      {switchRoutes}
       </Switch>
     );
   }

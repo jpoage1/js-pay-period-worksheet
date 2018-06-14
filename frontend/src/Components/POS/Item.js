@@ -1,7 +1,7 @@
 import React ,{ Component } from 'react';
 import Input from './../Input';
 
-class Items extends Component {
+class Item extends Component {
   constructor() {
     super();
     this.state = this.setDefaultState(true);
@@ -85,7 +85,7 @@ class Items extends Component {
     );
   }
 }
-export default Items;
+export default Item;
 /*Brands
 companies
 config

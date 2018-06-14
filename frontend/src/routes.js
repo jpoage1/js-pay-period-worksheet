@@ -1,14 +1,18 @@
 import Menu from './Modules/Menu';
+import Tenants from "./Components/Tenants";
+import Tenant from "./Components/Tenant";
 import Employees from "./Components/Employees";
 import Employee from "./Components/Employee";
 import PayPeriods from "./Components/PayPeriodWorksheet/PayPeriods";
-import payPeriod from "./Components/PayPeriodWorksheet/PayPeriod";
-import PayPeriodWorksheet from "./Components/PayPeriodWorksheet/Worksheet";
+import PayPeriod from "./Components/PayPeriodWorksheet/PayPeriod";
+import PayPeriodWorksheetSearch from "./Components/PayPeriodWorksheet/WorksheetSearch";
 
 import Customers from './Components/POS/Customers';
 import Inventory from './Components/POS/Inventory';
 import Items from './Components/POS/Items';
+import Item from './Components/POS/Item';
 import Groups from './Components/Groups';
+import Group from './Components/Group';
 import Purchases from './Components/POS/Purchases';
 import Shipments from './Components/POS/Shipments';
 import Users from './Components/POS/Users';
@@ -22,14 +26,65 @@ const routes =
     hide: true,
   },
   {
+    header: 'Users',
+    path: 'users',
+    component: Users,
+    routes: [
+		{
+		  	header: 'Tenants',
+		  	path: 'tenants', 
+		  	component: Tenants,
+		  	routes: [
+				{
+				  	header: 'Tenant',
+				  	path: ':tenant_id', 
+				  	component: Tenant,
+				  	routes: [],
+				},
+			],
+		},
+		{
+			header: 'Employees',
+		  	path: 'employees', 
+		  	component: Employees,
+		  	routes: [
+		  		{
+		  			header: 'Employee',
+		  			path: ':employee_id',
+		  			component: Employee,
+		  		},
+		  	],
+		},
+  		{
+  			header: 'Groups',
+  			path: 'groups',
+  			component: Groups,
+  			routes: [
+		  		{
+		  			header: 'Group',
+		  			path: ':group_id',
+		  			component: Group,
+		  		},
+  			]
+  		},
+	],
+  },
+  {
   	header: 'Pay Period Worksheet',
   	path: 'ppw', 
-  	component: PayPeriodWorksheet,
+  	component: PayPeriodWorksheetSearch,
   	routes: [
   		{
   			header: 'Pay Periods',
-  			path: 'PayPeriods',
+  			path: 'payPeriods',
   			component: PayPeriods,
+		  	routes: [
+		  		{
+		  			header: 'Pay Period',
+		  			path: ':pp_date',
+		  			component: PayPeriod,
+		  		},
+		  	],
   		},
   	],
   },
@@ -48,7 +103,7 @@ const routes =
 	    	{
 			    header: 'Items',
 			    path: 'items/:barcode',
-			    component: Items,
+			    component: Item,
 			    hide: true,
 	    	}
 	    ],
