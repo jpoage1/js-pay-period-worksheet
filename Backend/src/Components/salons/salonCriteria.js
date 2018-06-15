@@ -1,5 +1,5 @@
-const objToWhere = require("./objToWhere");
-const executeQuery = require("./executeQuery");
+const objToWhere = require("../objToWhere");
+const executeQuery = require("../executeQuery");
 const salonCriteria = (req, res, select, from, order) => {
 	const { body, query, params } = req;
 	const salon_id = params.salon_id

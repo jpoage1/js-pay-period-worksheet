@@ -1,58 +1,22 @@
 import React , { Component } from 'react';
-import DropMenus from "../Modules/DropMenus";
 import getIt from "../../Modules/getIt";
 class PayPeriodWorksheet extends Component {
 	constructor() {
 		super();
 		this.state = {
-			region: 0,
-			district: 0,
-			store: 0,
-			payPeriod: 0,
 			worksheetData: {
 				stylists: [],
-			},
-			worksheet: [],
-			dropMenus: [],
+			}
 		}
 	}
 	componentDidMount() {
+		console.log(this.props)
 		this.setState({ isLoading: true });
-		this.dropMenus();
 		this.getWorksheet();
 	}
-	updateWithNewData(newData) {
-		this.setState({ isLoading: false, ...newData });
-		//this.setState({ isLoading: false, worksheetData: worksheetData });
+	updateWithNewData(worksheetData) {
+		this.setState({ isLoading: false, worksheetData: worksheetData });
 	}
-	getWorksheet() {
-		const worksheetData = [getIt('http://127.0.0.1:5000/Api/PayPeriods')];
-	
-		Promise.all(worksheetData)
-		.then((worksheet) => {
-			this.updateWithNewData({worksheet: worksheet});
-			console.log(worksheet)
-		});
-		return worksheetData;
-	}
-	dropMenus() {
-		const dropMenusData = [
-			['http://127.0.0.1:5000/Api/Regions', 'Select Your Region', 'region_id', () => '', 'region_id', 'region_name'],
-			['http://127.0.0.1:5000/Api/Districts', 'Select Your District', 'district_id', () => '', 'district_id', 'district_name'],
-			['http://127.0.0.1:5000/Api/Salons', 'Select a Salon', 'store_id', this.showStylists(this.value, true), 'store_id', 'store_name'],
-			['http://127.0.0.1:5000/Api/Stylists', 'Select a Stylist', 'stylist_id', this.showPayPeriods(this.value, true), 'stylist_id', 'stylist_name'],
-			['http://127.0.0.1:5000/Api/PayPeriods', 'Select a Pay Period', 'pp_date', this.showPayPeriods(this.value, true), 'pp_date', 'pp_date'],
-		]
-		const dropMenusPromise = dropMenusData.map((row, i) => {
-			return getIt(row[0]);
-		});
-		Promise.all(dropMenusPromise)
-		.then((children) => {
-			this.updateWithNewData({dropMenus: (<DropMenus dropMenusData={dropMenusData} children={children} />)});
-		});
-		return dropMenusPromise;
-	}
-
 	safelyDivideTwoNumbers(a,b) {
 	  if ( b !== 0 ) {
 	    return a / b
@@ -144,6 +108,15 @@ class PayPeriodWorksheet extends Component {
 	    return this.fillEmployees([employees]);
 	  }
 	}
+	getWorksheet() {
+		const worksheetData = getIt('http://127.0.0.1:5000/Api/PayPeriods');
+	
+		Promise.all(worksheetData)
+		.then((worksheet) => {
+			console.log(worksheet);
+		});
+		return worksheetData;
+	}
 
     showStylistAverage()
     {
@@ -153,15 +126,15 @@ class PayPeriodWorksheet extends Component {
         }
         return false;
     }
-    showPeriodSalonAverage()
+    showPeriodSalonAverage(data)
     {
-        if ( this.state.payPeriod === 0 )
+        if ( data.payPeriod === 0 )
         {
             return false;
         }
         return true;
     }
-	insertRow(rowName, row = '', rowClass = '', i) {
+	insertRow(rowName, row = '', rowClass = '') {
 		const { worksheetData } = this.state;
 		const { stylist, payPeriod } = this.props;
 
@@ -188,12 +161,11 @@ class PayPeriodWorksheet extends Component {
             		: undefined;
                 salonGrossAverage = (<td>{worksheetData.salonGrossAverage[row]}</td>);
             }
-            showPeriodSalonTotal = !this.showPeriodSalonAverage() && stylist === 0 && worksheetData.stylists.length !== 0
+            showPeriodSalonTotal = !this.showPeriodSalonTotal() && stylist === 0 && worksheetData.stylists.length !== 0
             	? (<td>{worksheetData.salonPeriodTotal[row]}</td>)
             	: undefined;
         }
-        const columns = [
-  	      (<th key={`${row}_${i}`} className="rowName">{rowName}</th>),
+        const statHeaders = [
         	stylists,
         	showPeriodSalonAverage,
         	showStylistAverage,
@@ -202,12 +174,13 @@ class PayPeriodWorksheet extends Component {
         	showPeriodSalonTotal,
         ];
         return (<tr className={rowClass} key={row}>
-	        	{columns}
+	        <th className="rowName">{rowName}</th>
+	        	{statHeaders}
         	</tr>);
     }
     worksheetHeader() {
-    	const { stylist, worksheetData } = this.state;
-    	const { stylists } = worksheetData;
+    	const { worksheetData } = this.state;
+    	const { stylist } = this.props.data;
     	let showPeriodSalonAverage,
             showStylistAverage,
             salonAverage,
@@ -223,10 +196,10 @@ class PayPeriodWorksheet extends Component {
         		? (<th>Period Total</th>)
         		: undefined;
         } else {
-        	showPeriodSalonAverage = undefined;
-            showStylistAverage = undefined;
-            salonAverage = undefined;
-        	periodTotal = undefined;
+        	showPeriodSalonAverage = '';
+            showStylistAverage = '';
+            salonAverage = '';
+        	periodTotal = '';
         }
         const salonTotal = this.showPeriodSalonAverage() && stylist === 0 && this.worksheetdata.stylists.length !== 0
         	? (<th>Salon Total</th>)
@@ -238,12 +211,13 @@ class PayPeriodWorksheet extends Component {
         	periodTotal,
         	salonTotal,
         ];
-        const headers = [
-        	(<th key="stylistName" className="rowName">&nbsp;</th>),
-        	stylists.map( (column, i) => (<th key={`stylistName_${i}`}>{column['stylist_name']}</th>)),
-        	...statHeaders,
-	    ];
-    	return(<tr>{headers}</tr>);
+    	return(<tr>
+	        	<th class="rowName">&nbsp;</th>
+	            {worksheetData.stylists.map( (column, i) => {
+	                return (<th>{column['stylist_name']}</th>)
+	            })}
+	            {statHeaders}
+	        </tr>);
     }
 	worksheet() {
         const rows = [
@@ -271,48 +245,20 @@ class PayPeriodWorksheet extends Component {
         $	[("% of Service Commissions from Gross Revenue", 'percent_service_commission'],
         $	[("% Product Commission from Gross Service Revenue", 'percent_product_commission'],
         */
-        const worksheetHeader = this.worksheetHeader();
+        const shareFunctions = {
+    		showPeriodSalonAverage: this.showPeriodSalonAverage,
+            showStylistAverage: this.showStylistAverage,
+            salonAverage: this.salonAverage,
+        	periodTotal: this.periodTotal,
+        }
         return (<table id="PayPeriodWorksheet">
 			<thead>
-			 {worksheetHeader}
+			 <WorksheetHeader parent={shareFunctions} />
 			</thead>
         	<tbody>
-        	 {rows.map( (row, i) => this.insertRow(row[0], row[1], row[2], i))}
+        	 {rows.map( (row, i) => this.insertRow(row))}
         	</tbody>
         </table>);
-	}
-	render() {
-		const { isLoading, dropMenus } = this.state;
-		const worksheet = this.worksheet();
-		return (
-			<div className="PayPeriodWorksheetSearch">
-				<h2>Pay Period Worksheet</h2>
-				<div id="search_criteria">
-					<form method="get" action="index.php">
-						<input type="hidden" name="action" id="action" value="ppw" />
-						<ul>
-							{isLoading ? 'Loading...' : undefined}
-							{dropMenus ? dropMenus : undefined}
-						</ul>
-					</form>
-				</div>
-				{worksheet}
-			</div>
-		);
-	}
-
-	setPayPeriod(event) {
-		const newState = {
-			[event.name]: event.value,
-		};
-		console.log(newState)
-		this.setState(newState);
-	}
-	showStylists() {
-
-	}
-	showPayPeriods() {
-
 	}
 }
 export default PayPeriodWorksheet;

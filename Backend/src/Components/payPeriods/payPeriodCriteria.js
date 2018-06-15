@@ -1,5 +1,5 @@
-const objToWhere = require("./objToWhere");
-const executeQuery = require("./executeQuery");
+const objToWhere = require("../objToWhere");
+const executeQuery = require("../executeQuery");
 const payPeriodCriteria = (req, res, select, from, order) => {
 	const { body, query, params } = req; console.log(req);
 	const { pp_date } = params;
