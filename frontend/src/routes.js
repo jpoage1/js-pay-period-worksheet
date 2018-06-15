@@ -1,21 +1,25 @@
 import Menu from './Modules/Menu';
-import Tenants from "./Components/Tenants";
-import Tenant from "./Components/Tenant";
-import Employees from "./Components/Employees";
-import Employee from "./Components/Employee";
 import PayPeriods from "./Components/PayPeriodWorksheet/PayPeriods";
 import PayPeriod from "./Components/PayPeriodWorksheet/PayPeriod";
-import PayPeriodWorksheetSearch from "./Components/PayPeriodWorksheet/WorksheetSearch";
+import PayPeriodWorksheet from "./Components/PayPeriodWorksheet/Worksheet";
 
-import Customers from './Components/POS/Customers';
 import Inventory from './Components/POS/Inventory';
 import Items from './Components/POS/Items';
 import Item from './Components/POS/Item';
-import Groups from './Components/Groups';
-import Group from './Components/Group';
 import Purchases from './Components/POS/Purchases';
 import Shipments from './Components/POS/Shipments';
-import Users from './Components/POS/Users';
+
+
+import Users from './Components/Users/Users';
+import User from './Components/Users/User';
+import Group from './Components/Users/Group';
+//import Groups from './Components/Users/Groups';
+import Tenants from "./Components/Users/Tenants";
+import Tenant from "./Components/Users/Tenant";
+import Employees from "./Components/Users/Employees";
+import Employee from "./Components/Users/Employee";
+import Customers from './Components/Users/Customers';
+import Customer from './Components/Users/Customer';
 const routes = 
 [
   {
@@ -29,7 +33,39 @@ const routes =
     header: 'Users',
     path: 'users',
     component: Users,
+    routeProps: {
+		dataRoute: 'http://127.0.0.1:5000/Api/Users',
+		field: {
+			id: 'user_id',
+			name: 'user_nick',
+		},
+	},
     routes: [
+  		{
+  			header: 'User',
+  			path: ".:user",
+  			component: User,
+  			exact: true,
+  		},
+  		{
+  			header: 'Groups',
+  			path: 'groups',
+  			component: Users,
+  			routeProps: {
+				dataRoute: 'http://127.0.0.1:5000/Api/Groups',
+	  			field: {
+	  				id: 'group_id',
+	  				name: 'group_name',
+	  			},
+	  		},
+  			routes: [
+		  		{
+		  			header: 'Group',
+		  			path: ':group_id',
+		  			component: Group,
+		  		},
+  			],
+  		},
 		{
 		  	header: 'Tenants',
 		  	path: 'tenants', 
@@ -55,24 +91,24 @@ const routes =
 		  		},
 		  	],
 		},
-  		{
-  			header: 'Groups',
-  			path: 'groups',
-  			component: Groups,
-  			routes: [
-		  		{
-		  			header: 'Group',
-		  			path: ':group_id',
-		  			component: Group,
-		  		},
-  			]
-  		},
+	  {
+	    header: 'Customers',
+	    path: 'customers',
+	    component: Customers,
+	    routes: [
+	    	{
+			    header: 'Customer',
+			    path: 'customer',
+			    component: Customer,
+	    	}
+	    ]
+	  },
 	],
   },
   {
   	header: 'Pay Period Worksheet',
   	path: 'ppw', 
-  	component: PayPeriodWorksheetSearch,
+  	component: PayPeriodWorksheet,
   	routes: [
   		{
   			header: 'Pay Periods',
@@ -117,11 +153,6 @@ const routes =
 	    header: 'Shipments',
 	    path: 'shipments',
 	    component: Shipments,
-	  },
-	  {
-	    header: 'Customers',
-	    path: 'customers',
-	    component: Customers,
 	  },
 	  {
 	    header: 'Purchases',

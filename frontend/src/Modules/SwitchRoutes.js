@@ -13,7 +13,7 @@ class SwitchRoutes extends Component {
     />);
   };
   routeConfig(routes, pathPrefix, k) {
-    return routes.map(({ path, component: C, exact, routes }, i) => {
+    return routes.map(({ path, component: C, exact, routes, routeProps }, i) => {
         const fullPath = pathPrefix ? `${pathPrefix}/${path}` : `/${path}`;
         // Route doesn't have a component attoached.
        // if ( !C && routes ) // Then dig deeper for more routes
@@ -23,7 +23,7 @@ class SwitchRoutes extends Component {
         const RoutesToMenu = path === '' ? this.props.routes : undefined;
         const routeConfig = {
           path: fullPath,
-          render: (props) => (<C {...props} session={this.props.session} routes={RoutesToMenu} />),
+          render: (props) => (<C {...props} {...routeProps} session={this.props.session} routes={RoutesToMenu} />),
           key: `route_${path}_${i}`,
           exact: exact === true ? true : false,
         }
