@@ -8,8 +8,15 @@ class Menu extends Component {
   render() {
       return (
           <ul className="Menu">
-            {this.props.routes.map(({ header, path, hide, component, routes }, i) => 
+            {this.props.routes.map(({ path, hide, component, routes, routeProps }, i) => 
               {
+                let header;
+                if ( !routeProps || !routeProps.header ) {
+                  console.log(`Route Config Error. Check route.js near path: ${path}`);
+                } else {
+                  header = routeProps.header;
+                }
+                //const { header } = routeProps;
                 const fullPath = this.props.pathPrefix ? `${this.props.pathPrefix}/${path}` : `/${path}`;
                 const j = this.props.k ? this.props.k+i : i;
                 const children = routes

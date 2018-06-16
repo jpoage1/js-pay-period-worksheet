@@ -7,6 +7,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+const objToWhere = require("./Components/objToWhere");
 const routes = require("./routes");
 routes.forEach( (route) => {
 	//console.log(route[0])
@@ -14,7 +15,8 @@ routes.forEach( (route) => {
 	let module;
 	if ( sql ) {
 		module = (req, res) => {
-			const { select, from, where, order } = sql;
+			const { select, from, order } = sql;
+			const where = sql.where && Array.isArray(sql.where) ? objToWhere(sql.where, req.params) : sql.where;
 		 	executeQuery(res, select, from, where, order);
 		};
 	} else if (localPath) {

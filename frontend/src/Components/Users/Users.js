@@ -20,7 +20,6 @@ class Users extends Component {
 	
 		Promise.all(users)
 		.then((users) => {
-			console.log(users)
 			this.updateWithNewData({users: users[0]});
 		});
 		return users;
@@ -29,6 +28,7 @@ class Users extends Component {
 		const { users } = this.state;
 		//console.log(this.state)
 		const usersList = this.usersList(users);
+		//console.log(usersList)
 		return (<table>
 				<thead>
 				<tr>
@@ -49,7 +49,7 @@ class Users extends Component {
 	}
 	usersList(users) {
 		const { id, name } = this.props.field;
-		users.map((user,i) => (<tr key={`user_${i}`}>
+		return users.map((user,i) => (<tr key={`user_${i}`}>
 				<td><input type="checkbox" name={`user[${user[id]}]`} /></td>
 				<td>{user[name]}</td>
 				<td><select>
@@ -63,9 +63,10 @@ class Users extends Component {
 	}
 	render() {
 		const { isLoading, users } = this.state;
-		const usersList = this.users(users)
+		const { header } = this.props;
+		const usersList = this.users(users);
 		return ( <div className="Users">
-				<h2>Users</h2>
+				<h2>{header}</h2>
 				{isLoading ? 'Loading...' : undefined}
 				{usersList}
 			</div> );

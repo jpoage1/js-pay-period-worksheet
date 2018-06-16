@@ -80,21 +80,23 @@ module.exports = [
 		sql: {
 			select: 'SELECT *',
 			from: 'FROM districts',
+			where: [['district_id', '=', 'district']],
 		},
 	},
 	{
-		path: '/Api/Salons',
+		path: '/Api/Stores',
 		sql: {
 			select: 'SELECT *',
 			from: 'FROM stores',
 		},
 	},
 	{
+		path: '/Api/Stores/:store',
 		sql: {
 			select: 'SELECT *',
 			from: 'FROM stores',
+			where: [['store_id', '=', 'store']],
 		},
-		path: '/Api/Salons/:salon',
 	},
 	{
 		path: '/Api/Employees',
@@ -108,13 +110,14 @@ module.exports = [
 		sql: {
 			select: 'SELECT *',
 			from: 'FROM employees',
+			where: [['employee_id', '=', 'employee']],
 		},
 	},
 	{
 		path: '/Api/PayPeriods',
 		sql: {
 			select: 'SELECT *',
-			from: 'FROM pay_periods',
+			from: 'FROM pay_period',
 		},
 	},
 	{
@@ -122,6 +125,7 @@ module.exports = [
 		sql: {
 			select: 'SELECT *',
 			from: 'FROM pay_periods',
+			where: [['pp_date', '=', 'payPeriodDate']],
 		},
 	},
 	{

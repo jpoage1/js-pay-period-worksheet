@@ -12,28 +12,23 @@ import Shipments from './Components/POS/Shipments';
 
 import Users from './Components/Users/Users';
 import User from './Components/Users/User';
-import Group from './Components/Users/Group';
-//import Groups from './Components/Users/Groups';
-import Tenants from "./Components/Users/Tenants";
-import Tenant from "./Components/Users/Tenant";
-import Employees from "./Components/Users/Employees";
-import Employee from "./Components/Users/Employee";
-import Customers from './Components/Users/Customers';
-import Customer from './Components/Users/Customer';
+
 const routes = 
 [
   {
-    header: 'Menu',
     path: '',
     component: Menu,
     exact: true,
     hide: true,
+    routeProps: {
+    	header: 'Menu',
+    },
   },
   {
-    header: 'Users',
     path: 'users',
     component: Users,
     routeProps: {
+    	header: 'Users',
 		dataRoute: 'http://127.0.0.1:5000/Api/Users',
 		field: {
 			id: 'user_id',
@@ -42,16 +37,19 @@ const routes =
 	},
     routes: [
   		{
-  			header: 'User',
   			path: ".:user",
   			component: User,
   			exact: true,
+  			hide: true,
+  			routeProps: {
+	  			header: 'User',
+  			},
   		},
   		{
-  			header: 'Groups',
   			path: 'groups',
   			component: Users,
   			routeProps: {
+  				header: 'Groups',
 				dataRoute: 'http://127.0.0.1:5000/Api/Groups',
 	  			field: {
 	  				id: 'group_id',
@@ -60,75 +58,116 @@ const routes =
 	  		},
   			routes: [
 		  		{
-		  			header: 'Group',
 		  			path: ':group_id',
-		  			component: Group,
+		  			component: User,
+		  			hide: true,
+		  			routeProps: {
+			  			header: 'Group',
+		  			},
 		  		},
   			],
   		},
 		{
-		  	header: 'Tenants',
 		  	path: 'tenants', 
-		  	component: Tenants,
+		  	component: Users,
+  			routeProps: {
+			  	header: 'Tenants',
+				dataRoute: 'http://127.0.0.1:5000/Api/Tenants',
+	  			field: {
+	  				id: 'tenant_id',
+	  				name: 'tenant_name',
+	  			},
+	  		},
 		  	routes: [
-				{
-				  	header: 'Tenant',
+				{ 
 				  	path: ':tenant_id', 
-				  	component: Tenant,
-				  	routes: [],
+				  	component: User,
+				  	hide: true,
+		  			routeProps: {
+			  			header: 'Tenant',
+		  			}
 				},
 			],
 		},
 		{
-			header: 'Employees',
 		  	path: 'employees', 
-		  	component: Employees,
+		  	component: Users,
+  			routeProps: {
+				header: 'Employees',
+				dataRoute: 'http://127.0.0.1:5000/Api/Employees',
+	  			field: {
+	  				id: 'employee_id',
+	  				name: 'employee_name',
+	  			},
+	  		},
 		  	routes: [
 		  		{
-		  			header: 'Employee',
 		  			path: ':employee_id',
-		  			component: Employee,
+		  			component: User,
+		  			hide: true,
+					routeProps: {
+						header: 'Employee',
+					},
 		  		},
 		  	],
 		},
 	  {
-	    header: 'Customers',
 	    path: 'customers',
-	    component: Customers,
+	    component: Users,
+		routeProps: {
+		    header: 'Customers',
+			dataRoute: 'http://127.0.0.1:5000/Api/Customers',
+  			field: {
+  				id: 'customer_id',
+  				name: 'customer_name',
+  			},
+  		},
 	    routes: [
 	    	{
-			    header: 'Customer',
 			    path: 'customer',
-			    component: Customer,
-	    	}
-	    ]
+			    component: Users,
+			    hide: true,
+				routeProps: {
+					header: 'Customer',
+				},
+	    	},
+	    ],
 	  },
 	],
   },
   {
-  	header: 'Pay Period Worksheet',
   	path: 'ppw', 
   	component: PayPeriodWorksheet,
+  	routeProps: {
+  	  	header: 'Pay Period Worksheet',
+  	},
   	routes: [
   		{
-  			header: 'Pay Periods',
   			path: 'payPeriods',
   			component: PayPeriods,
+  			routeProps: {
+	  			header: 'Pay Periods',
+	  		},
 		  	routes: [
 		  		{
-		  			header: 'Pay Period',
 		  			path: ':pp_date',
 		  			component: PayPeriod,
+		  			hide: true,
+		  			routeProps: {
+			  			header: 'Pay Period',
+			  		},
 		  		},
 		  	],
   		},
   	],
   },
   {
-    header: 'POS',
     path: 'pos',
     component: null,
     hide: true,
+    routeProps: {
+	    header: 'POS',
+    },
 	routes:
 	[
 	  {
@@ -137,27 +176,35 @@ const routes =
 	    component: Items,
 	    routes: [
 	    	{
-			    header: 'Items',
 			    path: 'items/:barcode',
 			    component: Item,
 			    hide: true,
-	    	}
+			    routeProps: {
+				    header: 'Items',
+			    },
+	    	},
 	    ],
 	  },
 	  {
-	    header: 'Inventory',
 	    path: 'inventory',
 	    component: Inventory,
+	    routeProps: {
+	    	header: 'Inventory',
+		},
 	  },
 	  {
-	    header: 'Shipments',
 	    path: 'shipments',
 	    component: Shipments,
+	    routeProps: {
+	    	header: 'Shipments',
+	    },
 	  },
 	  {
-	    header: 'Purchases',
 	    path: 'purchases',
 	    component: Purchases,
+	    routeProps: {
+		    header: 'Purchases',
+		},
 	  },
 	],
   },
