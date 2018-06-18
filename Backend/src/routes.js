@@ -1,6 +1,76 @@
 // Local path, route,  select, from, where, order 
 module.exports = [
 	{
+		path: '/Api/Users',
+		method: {
+			get: {
+				select: ['id','nickname'],
+				from: ['users'],
+				where: [],
+				order: '', // asc, desc
+				orderBy: [],
+			},
+			post: ['nickname'],
+			put: '*',
+			delete: ['id'],
+		},
+		table: {
+			name: 'users',
+			columns: {
+				id: {
+					type: 'integer',
+					autoIncrement: true,
+				},
+				nickName: {
+					type: 'string'
+				},
+				firstName: {
+					type: 'string'
+				},
+				lastName: {
+					type: 'string'
+				},
+			},
+		},
+		formDefaults: {
+			nickname: 'Enter a nick name',
+		},
+	},
+	{
+		path: '/Api/Tenants',
+		method: {
+			get: {
+				select: ['*'],
+				from: ['tenants'],
+				where: [],
+				order: '', // asc, desc
+				orderBy: [],
+			},
+			post: ['user','name'], // Group name and whom it belongs to.
+			put: '*',
+			delete: ['id'],
+		},
+		table: {
+			id: {
+				type: 'integer',
+				autoIncrement: true,
+			},
+			user: {
+				type: 'integer',
+			},
+		},
+	},
+	{
+		path: '/Api/Groups',
+		sql: {
+			select: '*',
+			from: 'groups',
+		},
+		new: {
+			name: 'group_name',
+		},
+	},
+	{
 		localPath: './Components/Session',
 		path: '/Api/Authentication/Session',
 	},
@@ -13,118 +83,97 @@ module.exports = [
 		path: '/Api/Authentication/Logout',
 	},
 	{
-		path: '/Api/Groups',
-		sql: {
-			select: 'SELECT *',
-			from: 'FROM groups',
-		},
-	},
-	{
 		path: '/Api/Groups/:Group',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM groups',
-		},
-	},
-	{
-		path: '/Api/Users',
-		sql: {
-			select: 'SELECT *',
-			from: 'FROM users',
+			select: '*',
+			from: 'groups',
 		},
 	},
 	{
 		path: '/Api/Users/:User',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM users',
-		},
-	},
-	{
-		path: '/Api/Tenants',
-		sql: {
-			select: 'SELECT *',
-			from: 'FROM tenants',
+			select: '*',
+			from: 'users',
 		},
 	},
 	{
 		path: '/Api/Tenants/:tenant',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM tenants',
+			select: '*',
+			from: 'tenants',
 		},
 	},
 	{
 		path: '/Api/Regions',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM regions',
+			select: '*',
+			from: 'regions',
 		},
 	},
 	{
 		path: '/Api/Regions/:region',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM regions',
+			select: '*',
+			from: 'regions',
 		},
 	},
 	{
 		path: '/Api/Districts',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM districts',
+			select: '*',
+			from: 'districts',
 		},
 	},
 	{
 		path: '/Api/District/:district',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM districts',
+			select: '*',
+			from: 'districts',
 			where: [['district_id', '=', 'district']],
 		},
 	},
 	{
 		path: '/Api/Stores',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM stores',
+			select: '*',
+			from: 'stores',
 		},
 	},
 	{
 		path: '/Api/Stores/:store',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM stores',
+			select: '*',
+			from: 'stores',
 			where: [['store_id', '=', 'store']],
 		},
 	},
 	{
 		path: '/Api/Employees',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM employees',
+			select: '*',
+			from: 'employees',
 		},
 	},
 	{
 		path: '/Api/Employees/:employee',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM employees',
+			select: '*',
+			from: 'employees',
 			where: [['employee_id', '=', 'employee']],
 		},
 	},
 	{
 		path: '/Api/PayPeriods',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM pay_period',
+			select: '*',
+			from: 'pay_period',
 		},
 	},
 	{
 		path: '/Api/PayPeriods/:payPeriodDate',
 		sql: {
-			select: 'SELECT *',
-			from: 'FROM pay_periods',
+			select: '*',
+			from: 'pay_periods',
 			where: [['pp_date', '=', 'payPeriodDate']],
 		},
 	},

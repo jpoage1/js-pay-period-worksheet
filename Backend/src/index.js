@@ -3,20 +3,30 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+const pool = require("./Components/pool");
 const objToWhere = require("./Components/objToWhere");
 const routes = require("./routes");
 routes.forEach( (route) => {
 	//console.log(route[0])
-	const { sql, localPath } = route;
+	const { localPath } = route;
 	let module;
-	if ( sql ) {
+	if ( route.method && route.method.get ) {
 		module = (req, res) => {
-			const { select, from, order } = sql;
+			const sql = route.method.get;
+			const x = (x) => (x && Array.isArray(x) ? x.join(', ') : x);
+			const select = x(sql.select);
+			const from = x(sql.from);
 			const where = sql.where && Array.isArray(sql.where) ? objToWhere(sql.where, req.params) : sql.where;
+			const order = sql.order ? sql.order : '';
+			const orderBy = [
+					x(sql.orderBy),
+					order,
+				]
+				.join(' ');
 		 	executeQuery(res, select, from, where, order);
 		};
 	} else if (localPath) {
@@ -28,6 +38,33 @@ routes.forEach( (route) => {
 		}
 	}
 	app.get(route.path, module);
+
+	app.post(route.path, (req, res) => {
+		const { body, params, query } = req;
+		const table = route.table.name;
+		console.log(body)
+		const sqlColumns = route.method.post.map( (column, i) => {
+			return `${column},`;
+		})
+		.join(' ')
+		.slice(0,-1);
+		const sqlValues = route.method.post.map( (column, i) => {
+			return `'${body[column]}',`
+		})
+		.join(' ')
+		.slice(0,-1);
+		const sql = `INSERT INTO ${table} (${sqlColumns}) VALUES (${sqlValues}) `;
+		console.log(sql)
+		pool.query(sql)
+		.then( result => res.send(result.rows) )
+		.catch( e => res.status(403).send(e.stack) );
+	});
+	app.put(route.path, (req, res) => {
+
+	});
+	app.delete(route.path, (req, res) => {
+
+	});
 });
 // Start listening
 const port = process.env.PORT || 5000;

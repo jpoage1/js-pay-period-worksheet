@@ -30,10 +30,29 @@ const routes =
     routeProps: {
     	header: 'Users',
 		dataRoute: 'http://127.0.0.1:5000/Api/Users',
-		field: {
-			id: 'user_id',
-			name: 'user_nick',
-		},
+    	form: {
+    		nickname: {
+    			Tag: 'input',
+    			props: {
+	    			type: 'text',
+    				value: 'Create a new user',
+    			},
+    		},
+    		firstname: {
+    			Tag: 'input',
+    			props: {
+	    			type: 'text',
+    				value: 'First Name',
+    			},
+    		},
+    		lastname: {
+    			Tag: 'input',
+    			props: {
+	    			type: 'text',
+    				value: 'Last Name',
+    			},
+    		},
+    	},
 	},
     routes: [
   		{
@@ -45,16 +64,48 @@ const routes =
 	  			header: 'User',
   			},
   		},
+		{
+		  	path: 'tenants', 
+		  	component: Users,
+  			routeProps: {
+			  	header: 'Tenants',
+				dataRoute: 'http://127.0.0.1:5000/Api/Tenants',
+		    	form: { //get the list of users to select tenant
+		    		user: {
+		    			Tag: 'select',
+						dataRoute: 'http://127.0.0.1:5000/Api/Users',
+		    			header: 'Select Tenant By User',
+		    			label: 'nickname',
+		    			value: 'id,'
+		    		},
+		    	},
+	  		},
+		  	routes: [
+				{ 
+				  	path: ':tenant_id', 
+				  	component: User,
+				  	hide: true,
+		  			routeProps: {
+			  			header: 'Tenant',
+		  			}
+				},
+			],
+	  	},
   		{
   			path: 'groups',
   			component: Users,
   			routeProps: {
   				header: 'Groups',
 				dataRoute: 'http://127.0.0.1:5000/Api/Groups',
-	  			field: {
-	  				id: 'group_id',
-	  				name: 'group_name',
-	  			},
+		    	form: {
+		    		name: {
+		    			Tag: 'input',
+		    			props: {
+			    			type: 'text',
+		    				value: 'Create a new group',
+		    			},
+		    		},
+		    	},
 	  		},
   			routes: [
 		  		{
@@ -67,28 +118,6 @@ const routes =
 		  		},
   			],
   		},
-		{
-		  	path: 'tenants', 
-		  	component: Users,
-  			routeProps: {
-			  	header: 'Tenants',
-				dataRoute: 'http://127.0.0.1:5000/Api/Tenants',
-	  			field: {
-	  				id: 'tenant_id',
-	  				name: 'tenant_name',
-	  			},
-	  		},
-		  	routes: [
-				{ 
-				  	path: ':tenant_id', 
-				  	component: User,
-				  	hide: true,
-		  			routeProps: {
-			  			header: 'Tenant',
-		  			}
-				},
-			],
-		},
 		{
 		  	path: 'employees', 
 		  	component: Users,

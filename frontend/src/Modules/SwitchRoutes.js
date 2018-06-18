@@ -18,7 +18,9 @@ class SwitchRoutes extends Component {
         // Route doesn't have a component attoached.
        // if ( !C && routes ) // Then dig deeper for more routes
          // return this.switchRoutes(routes, fullPath, j);
-        const switchRoutes = routes !== undefined && routes.length > 0? this.routeConfig(routes, fullPath, 0) : [];
+        const switchRoutes = routes !== undefined && routes.length > 0
+          ? this.routeConfig(routes, fullPath, 0)
+          : [];
        // console.log(switchRoutes)
         const RoutesToMenu = path === '' ? this.props.routes : undefined;
         const routeConfig = {
