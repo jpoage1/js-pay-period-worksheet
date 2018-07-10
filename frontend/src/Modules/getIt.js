@@ -1,5 +1,5 @@
 import fetchIt from "./fetchIt";
-const getIt = (uri, callback) => {
-  return fetchIt(uri, callback);
+const getIt = (uri, data) => {
+  return fetchIt(uri, data);
 }
 export default getIt;

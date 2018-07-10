@@ -18,11 +18,11 @@ class Authentication extends Component {
     const uri = "http://localhost:5000/Api/Authenticate";
     const data = {
       alias: event.target.alias.value,
-      alias_type: event.target.alias_type.value,
       password: event.target.password.value
     };
     const processData = (data) => {
       console.log(data);
+    console.log("test2")
     };
     postIt(uri, processData, data);
   }
@@ -42,14 +42,10 @@ class Authentication extends Component {
       <h3>Restricted</h3>
       <form onSubmit={this.authenticate.bind(this)}>
 	     <p>
-        <select name="alias_type" onChange={this.setAliasType.bind(this)}>
-          <option value="email">Email</option>
-          <option value="nick">Nickname</option>
-        </select>
-        <input type="text" name="alias" ref={this.alias} />
+        <label htmlFor="alias">Login Name</label> <input type="text" name="alias" ref={this.alias} />
        </p>
 	     <p><label htmlFor="password">Password</label> <input type="text" name="password" /></p>
-	     <p><button>Login</button></p>
+	     <p><button type="submit">Login</button></p>
        </form>
       </div>
     );

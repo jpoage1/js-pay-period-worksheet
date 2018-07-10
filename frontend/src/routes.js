@@ -35,8 +35,9 @@ const routes =
     			Tag: 'input',
     			props: {
 	    			type: 'text',
-    				value: 'Create a new user',
+    				value: 'Enter a nickname',
     			},
+    			label: 'nickname',
     		},
     		firstname: {
     			Tag: 'input',
@@ -44,6 +45,7 @@ const routes =
 	    			type: 'text',
     				value: 'First Name',
     			},
+    			label: 'firstname',
     		},
     		lastname: {
     			Tag: 'input',
@@ -51,6 +53,7 @@ const routes =
 	    			type: 'text',
     				value: 'Last Name',
     			},
+    			label: 'lastname',
     		},
     	},
 	},
@@ -76,7 +79,49 @@ const routes =
 						dataRoute: 'http://127.0.0.1:5000/Api/Users',
 		    			header: 'Select Tenant By User',
 		    			label: 'nickname',
-		    			value: 'id,'
+		    			value: 'id',
+		    		},
+		    		name: {
+		    			Tag: 'input',
+		    			props: {
+			    			type: 'text',
+		    				value: 'Tenant Name',
+		    			},
+		    			label: 'name',
+		    		},
+		    	},
+	  		},
+		  	routes: [
+				{ 
+				  	path: ':tenant_id', 
+				  	component: User,
+				  	hide: true,
+		  			routeProps: {
+			  			header: 'Tenant',
+		  			}
+				},
+			],
+	  	},
+		{
+		  	path: 'employees', 
+		  	component: Users,
+  			routeProps: {
+			  	header: 'Employees',
+				dataRoute: 'http://127.0.0.1:5000/Api/Employees',
+		    	form: { //get the list of users to select tenant
+		    		tenant: {
+		    			Tag: 'select',
+						dataRoute: 'http://127.0.0.1:5000/Api/Tenants',
+		    			header: 'Select Tenant',
+		    			label: 'name',
+		    			value: 'tenant',
+		    		},
+		    		user: {
+		    			Tag: 'select',
+						dataRoute: 'http://127.0.0.1:5000/Api/Users',
+		    			header: 'Select User',
+		    			label: 'nickname',
+		    			value: 'user',
 		    		},
 		    	},
 	  		},
@@ -98,12 +143,20 @@ const routes =
   				header: 'Groups',
 				dataRoute: 'http://127.0.0.1:5000/Api/Groups',
 		    	form: {
+		    		parent: {
+		    			Tag: 'select',
+						dataRoute: 'http://127.0.0.1:5000/Api/Groups',
+		    			header: 'Select Parent Group',
+		    			label: 'parent',
+		    			value: 'id',
+		    		},
 		    		name: {
 		    			Tag: 'input',
 		    			props: {
 			    			type: 'text',
 		    				value: 'Create a new group',
 		    			},
+		    			label: 'name'
 		    		},
 		    	},
 	  		},
@@ -118,28 +171,6 @@ const routes =
 		  		},
   			],
   		},
-		{
-		  	path: 'employees', 
-		  	component: Users,
-  			routeProps: {
-				header: 'Employees',
-				dataRoute: 'http://127.0.0.1:5000/Api/Employees',
-	  			field: {
-	  				id: 'employee_id',
-	  				name: 'employee_name',
-	  			},
-	  		},
-		  	routes: [
-		  		{
-		  			path: ':employee_id',
-		  			component: User,
-		  			hide: true,
-					routeProps: {
-						header: 'Employee',
-					},
-		  		},
-		  	],
-		},
 	  {
 	    path: 'customers',
 	    component: Users,

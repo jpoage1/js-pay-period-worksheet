@@ -1,6 +1,6 @@
 const pool = require("./pool");
-executeQuery = (res, select, from, where = '', order = '') => {
-	sql = `SELECT ${select} FROM ${from} ${where} ${order}`;
+executeQuery = (res, select, from, where = '', order = '', join = '') => {
+	sql = `SELECT ${select} FROM ${from} ${join} ${where} ${order}`;
 	console.log(sql)
 	pool.query(sql)
 	.then( result => res.send(result.rows) )

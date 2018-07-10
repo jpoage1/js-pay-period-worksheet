@@ -1,9 +1,9 @@
 import fetchIt from "./fetchIt";
-const postIt = (uri, callback, data) => {
-  return fetchIt(uri, callback, {
+const postIt = (uri, data) => {
+  return fetchIt(uri, {
     body: JSON.stringify(data), // must match 'Content-Type' header
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: '*', // include, same-origin, *omit
+    credentials: 'same-origin', // include, same-origin, *omit
     headers: {
       'content-type': 'application/json'
     },

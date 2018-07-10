@@ -8,5 +8,9 @@ newlink
 first year is free
 
 
-			//need to change props because props are static
-			//i need to get it into state.
+//need to change input value props because props are static
+//i need to get it into state.
+
+useful npm packgase
+dotenv
+envify

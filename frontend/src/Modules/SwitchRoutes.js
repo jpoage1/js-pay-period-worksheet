@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch,} from 'react-router-dom';
+import Layout from './Layout'
 
 class SwitchRoutes extends Component {
   routeSet (routeConfig) {
@@ -25,7 +26,7 @@ class SwitchRoutes extends Component {
         const RoutesToMenu = path === '' ? this.props.routes : undefined;
         const routeConfig = {
           path: fullPath,
-          render: (props) => (<C {...props} {...routeProps} session={this.props.session} routes={RoutesToMenu} />),
+          render: (props) => (<Layout component={C} {...this.props} {...props} {...routeProps} routes={RoutesToMenu} />),
           key: `route_${path}_${i}`,
           exact: exact === true ? true : false,
         }

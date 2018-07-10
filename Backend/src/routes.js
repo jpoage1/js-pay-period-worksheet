@@ -4,13 +4,16 @@ module.exports = [
 		path: '/Api/Users',
 		method: {
 			get: {
-				select: ['id','nickname'],
+				select: ['id','nickname','firstname','lastname'],
 				from: ['users'],
 				where: [],
 				order: '', // asc, desc
 				orderBy: [],
 			},
-			post: ['nickname'],
+			post: {
+				table: 'users',
+				insert: ['nickname', 'firstname', 'lastname'],
+			},
 			put: '*',
 			delete: ['id'],
 		},
@@ -40,20 +43,67 @@ module.exports = [
 		path: '/Api/Tenants',
 		method: {
 			get: {
-				select: ['*'],
+				select: ['tenants.id','user','name','nickname'],
 				from: ['tenants'],
+				join: {
+					type: 'inner',
+					table: 'users',
+					on: ['tenants.user','=','users.id'],
+				},
 				where: [],
 				order: '', // asc, desc
 				orderBy: [],
 			},
-			post: ['user','name'], // Group name and whom it belongs to.
+			post: {
+				table: 'tenants',
+				insert: ['user', 'name'],
+			},
 			put: '*',
 			delete: ['id'],
 		},
 		table: {
 			id: {
-				type: 'integer',
+				type: 'serial',
 				autoIncrement: true,
+			},
+			user: {
+				type: 'integer',
+			},
+			name: {
+				type: 'text',
+			},
+		},
+	},
+
+	{
+		path: '/Api/Employees',
+		method: {
+			get: {
+				select: ['*'],
+				from: ['employees'],
+				join: {
+					type: 'inner',
+					table: 'users',
+					on: ['employees.user','=','users.id'],
+				},
+				where: [],
+				order: '', // asc, desc
+				orderBy: [],
+			},
+			post: {
+				table: 'employees',
+				insert: ['tenant', 'user'],
+			},
+			put: '*',
+			delete: ['id'],
+		},
+		table: {
+			id: {
+				type: 'serial',
+				autoIncrement: true,
+			},
+			tenant: {
+				type: 'integer',
 			},
 			user: {
 				type: 'integer',
@@ -62,12 +112,34 @@ module.exports = [
 	},
 	{
 		path: '/Api/Groups',
-		sql: {
-			select: '*',
-			from: 'groups',
+		method: {
+			get: {
+				select: ['g1.*','g2.name AS parent'],
+				from: ['groups g1','groups g2'],
+				where: [
+					['g1.parent','eq','g2.id'],
+				],
+				order: '', // asc, desc
+				orderBy: [],
+			},
+			post: {
+				table: 'groups',
+				insert: ['parent', 'name'],
+			},
+			put: '*',
+			delete: ['id'],
 		},
-		new: {
-			name: 'group_name',
+		table: {
+			id: {
+				type: 'integer',
+				autoIncrement: true,
+			},
+			parent: {
+				type: 'integer',
+			},
+			name: {
+				type: 'text',
+			},
 		},
 	},
 	{
@@ -145,13 +217,6 @@ module.exports = [
 			select: '*',
 			from: 'stores',
 			where: [['store_id', '=', 'store']],
-		},
-	},
-	{
-		path: '/Api/Employees',
-		sql: {
-			select: '*',
-			from: 'employees',
 		},
 	},
 	{
