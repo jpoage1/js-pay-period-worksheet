@@ -29,6 +29,7 @@ const routes =
     component: Users,
     routeProps: {
     	header: 'Users',
+    	popupHeader: 'Edit User',
 		dataRoute: 'http://127.0.0.1:5000/Api/Users',
     	form: {
     		nickname: {
@@ -194,6 +195,42 @@ const routes =
 	    ],
 	  },
 	],
+  },
+  {
+  	path: 'inventory',
+  	component: Users,
+  	routeProps: {
+  		header: 'Inventory Managemment',
+  	},
+  	routes: [
+  		{
+  			path: 'view',
+	  		component: Users,
+			routeProps: {
+		    	header: 'View',
+		    	popupHeader: 'Edit User',
+				dataRoute: 'http://127.0.0.1:5000/Api/Inventory',
+		    	form: {
+		    		nickname: {
+		    			Tag: 'input',
+		    			props: {
+			    			type: 'text',
+		    				value: 'Barcode',
+		    			},
+		    			label: 'nickname',
+		    		},
+		    		productName: {
+		    			Tag: 'input',
+		    			props: {
+			    			type: 'text',
+		    				value: 'Product Name',
+		    			},
+		    			label: 'productName',
+		    		},
+		    	},
+		    },
+		},
+  	],
   },
   {
   	path: 'ppw', 

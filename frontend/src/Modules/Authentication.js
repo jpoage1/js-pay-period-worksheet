@@ -3,7 +3,7 @@ import React ,{ Component } from 'react';
 import LaunchApp from "./LaunchApp";
 //import fetchIt from "./BackendOperations/fetchIt";
 //import getIt from "./BackendOperations/getIt";
-import postIt from "./postIt";
+import { postIt } from "./fetchIt";
 import state from "../state";
 
 import routes from "../routes";
@@ -30,11 +30,8 @@ class Authentication extends Component {
     this.alias.current.focus();
   }
   render() {
-    if ( this.state.session.user.user_id !== 0 )
-    	return this.loginForm();
-    else {
-      return (<LaunchApp routes={routes} session={this.state.session} />);
-    }
+    if ( this.state.session.user.user_id !== 0 ) return this.loginForm();
+    else return (<LaunchApp routes={routes} session={this.state.session} />);
   }
   loginForm() {
     return (

@@ -6,7 +6,7 @@ module.exports = [
 			get: {
 				select: ['id','nickname','firstname','lastname'],
 				from: ['users'],
-				where: [],
+				where: [['id','eq',':query.id']],
 				order: '', // asc, desc
 				orderBy: [],
 			},
@@ -15,7 +15,10 @@ module.exports = [
 				insert: ['nickname', 'firstname', 'lastname'],
 			},
 			put: '*',
-			delete: ['id'],
+			delete: {
+				table: 'users',
+				where: ['id','eq',':id'],
+			},
 		},
 		table: {
 			name: 'users',
@@ -48,7 +51,7 @@ module.exports = [
 				join: {
 					type: 'inner',
 					table: 'users',
-					on: ['tenants.user','=','users.id'],
+					on: ['tenants.user','eq','users.id'],
 				},
 				where: [],
 				order: '', // asc, desc
@@ -84,7 +87,7 @@ module.exports = [
 				join: {
 					type: 'inner',
 					table: 'users',
-					on: ['employees.user','=','users.id'],
+					on: ['employees.user','eq','users.id'],
 				},
 				where: [],
 				order: '', // asc, desc

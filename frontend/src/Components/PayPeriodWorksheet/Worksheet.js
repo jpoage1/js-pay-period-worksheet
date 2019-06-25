@@ -1,6 +1,6 @@
 import React , { Component } from 'react';
 import DropMenus from "../Modules/DropMenus";
-import getIt from "../../Modules/getIt";
+import { getIt } from "../../Modules/fetchIt";
 class PayPeriodWorksheet extends Component {
 	constructor() {
 		super();

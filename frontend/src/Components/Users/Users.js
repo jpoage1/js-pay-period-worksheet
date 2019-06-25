@@ -1,18 +1,6 @@
 import React ,{ Component } from 'react';
-import getIt from "../../Modules/getIt";
-import postIt from "../../Modules/postIt";
-class Popup extends React.Component {
-  render() {
-    return (
-      <div className='popup'>
-        <div className='popup_inner'>
-          <h1>{this.props.text}</h1>
-        <button onClick={this.props.closePopup}>close me</button>
-        </div>
-      </div>
-    );
-  }
-}
+import { postIt, getIt, putIt, deleteIt } from "../../Modules/fetchIt";
+import Popup from "./Popup"
 
 class Users extends Component {
 	constructor() {
@@ -22,6 +10,7 @@ class Users extends Component {
 			changes: [],
 			form: [],
 			formData: [],
+			formDataAction: [],
 			showPopup: false,
 		};
 	}
@@ -90,9 +79,9 @@ class Users extends Component {
 		}
 	}
 	onChange(event) {
-		let newState = this.state.form;
-		newState[event.target.name] = event.target.value
-		this.setState(newState);
+		let { form } = this.state;
+		form[event.target.name] = event.target.value
+		this.setState(form);
 	}
 	parseNewData(newData) {
 		let changes = {};
@@ -110,27 +99,48 @@ class Users extends Component {
 		});
 		return form;
 	}
-	performAction() {
-
-	}
-	formAction(event) {
-		let changes;
-		if ( event.target.value === "1" ) {
-			postIt(this.props.dataRoute, this.state.form);
-			const form = this.parseNewData(this.state.form);
-			changes = [form].concat(this.state.changes);
+	performAction(event, id = '0') {
+		const actions = {
+			'add' : _ => {
+				postIt(this.props.dataRoute, this.state.form);
+				const form = this.parseNewData(this.state.form);
+				return [form].concat(this.state.changes);
+			},
+			'clear' : _ => {
+				return this.state.changes;
+			},
+			'saveSelected' : _ => {
+				putIt(this.props.dataRoute, );
+			},
+			'deleteSelected' : _ => {
+				deleteIt(this.props.dataRoute, );
+			},
+			'resetSelected' : _ => {},
+			'saveItem' : _ => {
+				putIt(this.props.dataRoute, );
+			},
+			'editItem' : _ => {
+				this.togglePopup();
+			},
+			'deleteItem' : _ => {
+				deleteIt(this.props.dataRoute, id);
+			},
+			'resetItem' : _ => {},
 		}
-		else
-		{
-			changes = this.state.changes;
-		}
-		if ( event.target.value === "1" || event.target.value === "2") {
-			this.setState({
-				form: this.defaultFormValues(),
-				changes: changes,
-			});
-		}
+		const whatAction = this.state.formDataAction[id];
+		const action = actions[whatAction];
+		if ( !action ) return;
+		const changes = action();
+		this.setState({
+			form: whatAction === 'clear' ? this.defaultFormValues() : this.state.form,
+			changes: changes,
+		});
 		event.target.value = "0";
+	}
+	formAction(event, id = '0') {
+		let { formDataAction } = this.state
+		formDataAction[id] = event.target.value;
+		this.setState({formDataAction: formDataAction});
 	}
 
 	drawElement(column, i) {
@@ -196,10 +206,10 @@ class Users extends Component {
 					return (<td key={`formItem-${i}`}>{drawElement}</td>);
 				})
 			}
-			<td><select onChange={this.formAction.bind(this)}>
+			<td><select onChange={(e) => this.formAction(e)}>
 				<option value="0">Action</option>
-				<option value="1">Add</option>
-				<option value="2">Clear</option>
+				<option value="add">Add</option>
+				<option value="clear">Clear</option>
 			</select></td>
 		</tr>);
 	}
@@ -209,7 +219,7 @@ class Users extends Component {
 		const changesList = changes ? this.usersList(changes) : changes;
 		const form = this.form();
 		const filterColumns = this.filterColumns();
-		const changesHeader = changesList.length > 0
+		const changesHeader = changesList && changesList.length > 0
 			? (_ => {
 				return (<tr>
 					<th></th>
@@ -219,6 +229,9 @@ class Users extends Component {
 				</tr>);
 			})()
 			: undefined;
+		const hidden = {
+			hidden: "hidden"
+		};
 		return (<table>
 				<thead>
 					<tr>
@@ -247,11 +260,12 @@ class Users extends Component {
 						<th><input type="checkbox" /></th>
 						<th>Select All</th>
 						<th colSpan={Object.keys(this.props.form).length-1}>Results</th>
-						<th><select onChange={this.performAction.bind(this)}>
+						<th><select onChange={this.formAction.bind(this)}>
 							<option>Action</option>
-							<option>Edit</option>
-							<option>Delete</option>
+							<option value="deleteSelected">Delete Selected</option>
+							<option value="resetAll">Reset All</option>
 						</select></th>
+						<th><span className={hidden}><button onClick={this.performAction.bind(this)}>Confirm</button></span></th>
 					</tr>
 					{usersList}
 				</tfoot>
@@ -260,7 +274,6 @@ class Users extends Component {
 
 	usersListItemColumns(user, i) {
 		const { form } = this.props;
-		//console.log(this.state)
 		return Object.keys(form).map( (column, i) => {
 			const { label } = this.props.form[column];
 			return (<td key={`listItem-${user['id']}-${i}`}>{user[label]}</td>);
@@ -277,22 +290,26 @@ class Users extends Component {
 	usersListItem(user, i) {
 		const usersListItemColumns = this.usersListItemColumns(user, i);
 		const hidden = {
-			hidden: "hidden"
+			hidden: "hidden",
 		};
 		return (<tr key={`user_${i}`}>
 				<td><input type="checkbox" /></td>
 				{usersListItemColumns}
-				<td><select>
+				<td><select onChange={(e) => this.formAction(e, user.id)}>
 					<option value="0">Action</option>
-					<option value="0">Edit</option>
-					<option value="0">Delete</option>
+					<option value="editItem">Edit</option>
+					<option value="deleteItem">Delete</option>
+					<option value="resetItem">Reset</option>
 				</select></td>
-				<th><span className={hidden}><button>Confirm</button></span></th>
+				<th><span className={hidden}><button onClick={(e) => this.performAction(e, user.id)}>Confirm</button></span></th>
 			</tr>);
 	}
 	usersList(users) {
 		if ( !Array.isArray(users) ) return;
 		return users.map((user,i) => this.usersListItem(user, i));
+	}
+	saveData() {
+
 	}
 	render() {
 		const { isLoading } = this.state;
@@ -305,7 +322,8 @@ class Users extends Component {
 				{error}
 				{this.state.showPopup ? 
 		          <Popup
-		            text='Close Me'
+		          	header={this.props.popupHeader}
+		          	save={this.saveData.bind(this)}
 		            closePopup={this.togglePopup.bind(this)}
 		          />
 		          : null

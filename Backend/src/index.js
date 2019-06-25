@@ -21,7 +21,7 @@ routes.forEach( (route) => {
 			const x = (x) => (x && Array.isArray(x) ? x.join(', ') : x);
 			const select = x(sql.select);
 			const from = x(sql.from);
-			const where = sql.where && Array.isArray(sql.where) ? objToWhere(sql.where, req.params) : sql.where;
+			const where = sql.where && Array.isArray(sql.where) ? objToWhere(sql.where, req) : sql.where;
 			const order = sql.order ? sql.order : '';
 			const orderBy = [
 					x(sql.orderBy),
@@ -65,13 +65,29 @@ routes.forEach( (route) => {
 		const sql = `INSERT INTO ${table}\n(${sqlColumns})\nVALUES\n(${sqlValues}) `;
 		console.log(sql)
 		pool.query(sql)
-		.then( result => res.send(JSON.stringify({})) )
+		.then( result => res.send(JSON.stringify(result)) )
 		.catch( e => res.status(403).send(e.stack) );
 	});
 	app.put(route.path, (req, res) => {
 
 	});
 	app.delete(route.path, (req, res) => {
+		const { body, params, query } = req;
+		const { table, id } = route.method.delete;
+		const sqlColumns = id.map( (column, i) => {
+			return `"${column}", `
+		}).join(' ').slice(0,-2);;
+		const sqlValues = id.map( (column, i) => {
+			if ( isNaN(body[column]) )	{
+				return `'${body[column]}', `
+			}
+			return `${body[column]}, `
+		}).join(' ').slice(0,-2);
+		const sql = `DELETE FROM ${table}\n(${sqlColumns})\nVALUES\n(${sqlValues}) `;
+		console.log(sql)
+		pool.query(sql)
+		.then( result => res.send(JSON.stringify(result)) )
+		.catch( e => res.status(403).send(e.stack) );
 
 	});
 });
